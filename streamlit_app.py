@@ -20,7 +20,7 @@ def search_youtube(keyword):
     for item in response.get('items', []):
         video_id = item['id']['videoId']
         title = item['snippet']['title']
-        tags = item['snippet'].get('tags', [])
+        tags = item['snippet']['tags']
         videos.append({"video_id": video_id, "title": title, "tags": tags})
 
     return pd.DataFrame(videos)
