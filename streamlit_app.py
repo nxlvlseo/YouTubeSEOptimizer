@@ -43,5 +43,14 @@ def app_ui():
         st.write(df)
         download_as_csv(df)
 
+def accumulate_tags(videos_response):
+    all_tags = []
+    for video in videos_response:
+        tags = video.get("tags", [])
+        all_tags.extend(tags)
+    return list(set(all_tags))  # Remove duplicates by converting to a set and back to a list
+    
+
+
 if __name__ == "__main__":
     app_ui()
