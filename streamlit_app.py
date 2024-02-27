@@ -32,21 +32,21 @@ def refine_tags_and_generate_comments(tags):
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
-                {"role": "user", "content": "Refine these YouTube tags for better reach: {tags_str}."},
-                {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
+                {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."},
+            #    {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
 
         # Assuming the first user-generated content after the system message is the refined tags
         # and the second is the generated comments. Adjust based on your observation of response structure.
-        messages = response['choices'][0]['message']['content'].split("\n")
-        if len(messages) > 1:
+#        messages = response['choices'][0]['message']['content'].split("\n")
+#        if len(messages) > 1:
             # This is a basic split logic; you might need to adjust based on how the actual content is structured.
-            refined_tags, comments = messages[0], "\n".join(messages[1:])
-        else:
-            refined_tags, comments = "No refined tags generated.", "No comments generated."
-        
-        return refined_tags, comments
+#            refined_tags, comments = messages[0], "\n".join(messages[1:])
+#        else:
+#            refined_tags, comments = "No refined tags generated.", "No comments generated."
+        refined_tags = message_content
+        return refined_tags#, comments
     except Exception as e:
         st.error(f"An error occurred: {e}")
         return "Error", "Error"
@@ -77,19 +77,21 @@ def app_ui():
                 st.session_state['unique_tags'] = unique_tags
 
     if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
-        refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
+    #   refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])#
+        refined_tags = refine_tags_and_generate_comments(st.session_state['unique_tags'])
         st.text_area("Refined Tags", value=refined_tags, height=100)
-        st.text_area("Generated Comments", value=comments, height=300)
+        #st.text_area("Generated Comments", value=comments, height=300)
         #combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
         #st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
               
 
         # Prepare CSV content
-        tags_csv, comments_csv = create_csv_content_for_download(refined_tags, comments)
-                    
+        #tags_csv, comments_csv = create_csv_content_for_download(refined_tags, comments)
+        tags_csv = create_csv_content_for_download(refined_tags)
+        
         # Download buttons for CSV files
         st.download_button("Download Refined Tags CSV", tags_csv, "refined_tags.csv", "text/csv", key='download-tags')
-        st.download_button("Download Generated Comments CSV", comments_csv, "generated_comments.csv", "text/csv", key='download-comments')
+        # st.download_button("Download Generated Comments CSV", comments_csv, "generated_comments.csv", "text/csv", key='download-comments')
 
 
 if __name__ == "__main__":
