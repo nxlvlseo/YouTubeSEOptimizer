@@ -35,7 +35,9 @@ def refine_tags_and_generate_comments(tags):
                 {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."}
             ]
         )
-
+        # Assuming the first user-generated content after the system message is the refined tags
+        refined_tags = response_tags.choices[0].text.strip() if response_tags.choices else "No refined tags generated."
+        
         response_comments = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
@@ -43,10 +45,7 @@ def refine_tags_and_generate_comments(tags):
                 {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
-
-        # Assuming the first user-generated content after the system message is the refined tags
         # and the second is the generated comments. Adjust based on your observation of response structure.
-        refined_tags = response_tags.choices[0].text.strip() if response_tags.choices else "No refined tags generated."
         comments = response_comments.choices[0].text.strip() if response_comments.choices else "No comments generated."
 
         
