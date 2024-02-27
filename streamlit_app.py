@@ -43,7 +43,7 @@ def refine_tags_and_generate_comments(tags):
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
-                {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags: {tags_str}"}
+                {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags: {tags_str}."}
             ]
         )
         # and the second is the generated comments. Adjust based on your observation of response structure.
@@ -57,8 +57,7 @@ def refine_tags_and_generate_comments(tags):
 
 
 def create_csv_content_for_download(refined_tags, comments):
-    # Assuming refined_tags is a single string of comma-separated values
-    tags_df = pd.DataFrame({'Refined Tags': refined_tags.split(',')})
+    tags_df = pd.DataFrame({'Refined Tags': refined_tags.split(',')})     # Assuming refined_tags is a single string of comma-separated values
     comments_df = pd.DataFrame({'Generated Comments': comments.split('\n')})  # Assuming comments are separated by newlines
 
     # Convert DataFrames to CSV
