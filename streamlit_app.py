@@ -83,23 +83,10 @@ def refine_tags_and_generate_comments(tags):
     
     return refined_tags, comments
 
-
 def download_refined_tags_and_comments(refined_tags, comments):
     # Combine the tags and comments into a single string for download
     combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
     st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
-
-
-if keyword and st.button("Search YouTube and Process Tags"):
-    df = search_youtube(keyword)
-    if not df.empty:
-        all_tags = accumulate_tags(df.to_dict('records'))
-        refined_tags, comments = refine_tags_and_generate_comments(all_tags)
-        st.text_area("Refined Tags", value=refined_tags, height=100)
-        st.text_area("Generated Comments", value=comments, height=300)
-        download_refined_tags_and_comments(refined_tags, comments)
-    else:
-        st.write("No videos found.")
 
 
 if __name__ == "__main__":
