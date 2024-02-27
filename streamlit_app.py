@@ -6,6 +6,7 @@ import pandas as pd
 import csv
 import os
 import pickle
+import openai
 
 # Assuming you've set up st.secrets["YOUTUBE_API_KEY"] and st.secrets["OPENAI_API_KEY"] in your Streamlit app's secrets
 youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
@@ -50,7 +51,37 @@ def accumulate_tags(videos_response):
         all_tags.extend(tags)
     return list(set(all_tags))  # Remove duplicates by converting to a set and back to a list
     
-
+def refine_tags_and_generate_comments(tags):
+    openai.api_key = st.secrets["secrets"]["OPENAI_API_KEY"]
+    
+    # Join tags into a single string
+    tags_str = ", ".join(tags)
+    prompt_for_tags = f"Refine and optimize these YouTube tags for better reach: {tags_str}."
+    prompt_for_comments = f"Generate 50 engaging YouTube comments based on these tags: {tags_str}."
+    
+    # Deduplicate and optimize tags
+    response_tags = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt_for_tags,
+        max_tokens=100,
+        temperature=0.5,
+    )
+    
+    refined_tags = response_tags.choices[0].text.strip()
+    
+    # Generate comments
+    response_comments = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt_for_comments,
+        max_tokens=500,
+        temperature=0.7,
+        n=1,  # Adjust based on how many sets of comments you want
+        stop=["\n\n"]  # Use stop sequences to control the length of each comment
+    )
+    
+    comments = response_comments.choices[0].text.strip()
+    
+    return refined_tags, comments
 
 if __name__ == "__main__":
     app_ui()
