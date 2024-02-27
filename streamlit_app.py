@@ -26,7 +26,7 @@ def search_youtube(keyword):
 
 
 def refine_tags_and_generate_comments(tags):
-    tags_str = [{"tags": item['snippet'].get('tags', [])} for item in videos_response.get('items', [])]
+    tags_str = ",".join(tags)
     try:
         response = openai.ChatCompletion.create(
             model="gpt-4",
