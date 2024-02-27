@@ -11,6 +11,7 @@ import openai
 # Assuming you've set up st.secrets["YOUTUBE_API_KEY"] and st.secrets["OPENAI_API_KEY"] in your Streamlit app's secrets
 youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
+openai.api_key = st.secrets["secrets"]["OPENAI_API_KEY"]
 
 def search_youtube(keyword):
     request = youtube.search().list(q=keyword, part="id", maxResults=30, type="video")
@@ -51,9 +52,7 @@ def accumulate_tags(videos_info):
         all_tags.extend(tags)
     return list(set(all_tags))  # Remove duplicates by converting to a set and back to a list
     
-def refine_tags_and_generate_comments(tags):
-    openai.api_key = st.secrets["secrets"]["OPENAI_API_KEY"]
-    
+def refine_tags_and_generate_comments(tags): 
     # Join tags into a single string
     tags_str = ", ".join(tags)
     prompt_for_tags = f"Refine and optimize these YouTube tags for better reach: {tags_str}."
