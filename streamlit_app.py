@@ -12,18 +12,22 @@ youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
 def search_youtube(keyword):
-    # This function searches YouTube for videos matching the keyword and returns a DataFrame with video IDs and titles
-    request = youtube.search().list(q=keyword, part="id,snippet", maxResults=30, type="video")
+    request = youtube.search().list(q=keyword, part="id", maxResults=30, type="video")
     response = request.execute()
 
-    videos = []
-    for item in response.get('items', []):
-        video_id = item['id']['videoId']
+    video_ids = [item['id']['videoId'] for item in response.get('items', [])]
+    videos_request = youtube.videos().list(id=','.join(video_ids), part="snippet")
+    videos_response = videos_request.execute()
+
+    videos_info = []
+    for item in videos_response.get('items', []):
+        video_id = item['id']
         title = item['snippet']['title']
         tags = item['snippet'].get('tags', [])
-        videos.append({"video_id": video_id, "title": title, "tags": tags})
+        
+        videos_info.append({"video_id": video_id, "title": title, "tags": tags})
 
-    return pd.DataFrame(videos)
+    return pd.DataFrame(videos_info)
 
 def download_as_csv(dataframe):
     # This function converts a DataFrame to CSV and allows the user to download it
