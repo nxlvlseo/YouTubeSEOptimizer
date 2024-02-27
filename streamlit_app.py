@@ -43,10 +43,5 @@ def app_ui():
         st.write(df)
         download_as_csv(df)
 
-    # Placeholder for video file upload
-    uploaded_video = st.file_uploader("Upload a video file:", type=["mp4"])
-    if uploaded_video is not None:
-        st.video(uploaded_video)
-
 if __name__ == "__main__":
     app_ui()
