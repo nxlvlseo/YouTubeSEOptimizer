@@ -48,7 +48,7 @@ def refine_tags_and_generate_comments(tags):
         )
         # and the second is the generated comments. Adjust based on your observation of response structure.
         #comments = response_comments.choices[0].text.strip() if response_comments.choices else "No comments generated."
-        comments = response_comments['choices'][0]['message']['content'] if len(response_comments['choices']) > 1 else "No comments generated."
+        comments = response_comments['choices'][0]['message']['content'] #if len(response_comments['choices']) > 1 else "No comments generated."
         
         
         return refined_tags, comments
