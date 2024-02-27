@@ -20,7 +20,8 @@ def search_youtube(keyword):
     for item in response.get('items', []):
         video_id = item['id']['videoId']
         title = item['snippet']['title']
-        videos.append({"video_id": video_id, "title": title})
+        tags = item['snippet'].get('tags', [])
+        videos.append({"video_id": video_id, "title": title, "tags": tags})
 
     return pd.DataFrame(videos)
 
@@ -42,49 +43,6 @@ def app_ui():
     uploaded_video = st.file_uploader("Upload a video file:", type=["mp4"])
     if uploaded_video is not None:
         st.video(uploaded_video)
-
-# This is a simplified version and needs to be adjusted according to your authentication flow and stored credentials.
-def authenticate_youtube():
-    credentials = None
-    # Token.pickle stores the user's credentials from previously successful logins
-    if os.path.exists('token.pickle'):
-        print("Loading Credentials From File...")
-        with open('token.pickle', 'rb') as token:
-            credentials = pickle.load(token)
-
-    # If there are no valid credentials available, then either refresh the token or log in.
-    if not credentials or not credentials.valid:
-        if credentials and credentials.expired and credentials.refresh_token:
-            print("Refreshing Access Token...")
-            credentials.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                'client_secrets.json',
-                scopes=['https://www.googleapis.com/auth/youtube.force-ssl']
-            )
-            flow.run_local_server(port=8080, prompt='consent', authorization_prompt_message='')
-            credentials = flow.credentials
-            # Save the credentials for the next run
-            with open('token.pickle', 'wb') as f:
-                print("Saving Credentials for Future Use...")
-                pickle.dump(credentials, f)
-
-    youtube = build('youtube', 'v3', credentials=credentials)
-    return youtube
-
-# Function to update video details
-def update_video_details(youtube, video_id, tags, description):
-    # Example of updating video's tags and description
-    youtube.videos().update(
-        part="snippet",
-        body={
-            "id": video_id,
-            "snippet": {
-                "tags": tags,
-                "description": description
-            }
-        }
-    ).execute()
 
 if __name__ == "__main__":
     app_ui()
