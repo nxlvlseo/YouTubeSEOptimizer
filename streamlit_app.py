@@ -31,8 +31,8 @@ def refine_tags_and_generate_comments(tags):
     tags_str = ", ".join(tags)
     prompt_for_tags = f"Refine and optimize these YouTube tags for better reach: {tags_str}."
     prompt_for_comments = f"Generate 50 engaging YouTube comments based on these tags: {tags_str}."
-    response_tags = openai.Completion.create(engine="gpt-4", prompt=prompt_for_tags, max_tokens=100, temperature=0.5)
-    response_comments = openai.Completion.create(engine="gpt-4", prompt=prompt_for_comments, max_tokens=500, temperature=0.7, n=1, stop=["\n\n"])
+    response_tags = openai.Completion.create(model="gpt-4", prompt=prompt_for_tags, max_tokens=100, temperature=0.5)
+    response_comments = openai.Completion.create(model="gpt-4", prompt=prompt_for_comments, max_tokens=500, temperature=0.7, n=1, stop=["\n\n"])
     refined_tags = response_tags.choices[0].text.strip()
     comments = response_comments.choices[0].text.strip()
     return refined_tags, comments
