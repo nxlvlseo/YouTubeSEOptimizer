@@ -37,7 +37,7 @@ def refine_tags_and_generate_comments(tags):
         )
         # Assuming the first user-generated content after the system message is the refined tags
         #refined_tags = response_tags.choices[0].text.strip() if response_tags.choices else "No refined tags generated."
-        refined_tags = response_tags['choices'][0]['message']['content'] if response['choices'] else "No refined tags generated."
+        refined_tags = response_tags['choices'][0]['message']['content'] if response_tags['choices'] else "No refined tags generated."
         
         response_comments = openai.ChatCompletion.create(
             model="gpt-4",
@@ -48,7 +48,7 @@ def refine_tags_and_generate_comments(tags):
         )
         # and the second is the generated comments. Adjust based on your observation of response structure.
         #comments = response_comments.choices[0].text.strip() if response_comments.choices else "No comments generated."
-        comments = response_comments['choices'][1]['message']['content'] if len(response['choices']) > 1 else "No comments generated."
+        comments = response_comments['choices'][1]['message']['content'] if len(response_comments['choices']) > 1 else "No comments generated."
         
         return refined_tags, comments
     except Exception as e:
