@@ -26,7 +26,7 @@ def search_youtube(keyword):
 
 
 def refine_tags_and_generate_comments(tags):
-    tags_str = ", ".join(unique_tags)
+    tags_str = ", ".join(tags)
     try:
         # Initiate a chat session with OpenAI using a supported chat model
         response = openai.ChatCompletion.create(
@@ -39,7 +39,7 @@ def refine_tags_and_generate_comments(tags):
         )
         
         # Initialize placeholders for the output
-        refined_tags, comments = "No refined tags generated.", "No comments generated."
+        # refined_tags, comments = "No refined tags generated.", "No comments generated."
 
         refined_tags = response['choices'][0]['message']['content'] if response['choices'] else "No refined tags generated."
         comments = response['choices'][1]['message']['content'] if len(response['choices']) > 1 else "No comments generated."
