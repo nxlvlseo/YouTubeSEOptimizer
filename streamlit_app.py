@@ -53,31 +53,21 @@ def refine_tags_and_generate_comments(tags):
 def app_ui():
     st.title("YouTube Video Metadata Collector")
     keyword = st.text_input("Enter a keyword to search on YouTube:", "")
-
     if keyword:
-        # Button to search YouTube and display results
         if st.button("Search YouTube"):
             df = search_youtube(keyword)
             if not df.empty:
                 st.write(df)
-                # Accumulate all tags from search results for processing
-                all_tags = [tag for sublist in df['tags'].tolist() for tag in sublist]
-                unique_tags = list(set(all_tags))  # Deduplicate tags
+                all_tags = [tag for sublist in df['tags'].tolist() for tag in sublist if tag]
+                unique_tags = list(set(all_tags))
+                st.session_state['unique_tags'] = unique_tags
 
-                # Button to refine tags and generate comments
-                if st.button("Refine Tags and Generate Comments"):
-                    refined_tags, comments = refine_tags_and_generate_comments(unique_tags)
-                    st.text_area("Refined Tags", value=refined_tags, height=100)
-                    st.text_area("Generated Comments", value=comments, height=300)
-                    
-                    # Option to download refined tags and comments
-                    download_refined_tags_and_comments(refined_tags, comments)
-            else:
-                st.write("No videos found.")
-
-def download_refined_tags_and_comments(refined_tags, comments):
-    combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
-    st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
+    if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
+        refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
+        st.text_area("Refined Tags", value=refined_tags, height=100)
+        st.text_area("Generated Comments", value=comments, height=300)
+        combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
+        st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
     
 
 if __name__ == "__main__":
