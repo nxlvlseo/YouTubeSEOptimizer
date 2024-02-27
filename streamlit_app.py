@@ -1,7 +1,11 @@
 import streamlit as st
 from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 import pandas as pd
 import csv
+import os
+import pickle
 
 # Assuming you've set up st.secrets["YOUTUBE_API_KEY"] and st.secrets["OPENAI_API_KEY"] in your Streamlit app's secrets
 youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
@@ -39,11 +43,48 @@ def app_ui():
     if uploaded_video is not None:
         st.video(uploaded_video)
 
-        # Placeholder for embedding comments and tags into the video details
-        # This will require using YouTube Data API with OAuth2 for authenticated requests
+# This is a simplified version and needs to be adjusted according to your authentication flow and stored credentials.
+def authenticate_youtube():
+    credentials = None
+    # Token.pickle stores the user's credentials from previously successful logins
+    if os.path.exists('token.pickle'):
+        print("Loading Credentials From File...")
+        with open('token.pickle', 'rb') as token:
+            credentials = pickle.load(token)
 
-        # Placeholder for providing a download button for the updated video
-        # This functionality depends on how you handle video processing and updating metadata
+    # If there are no valid credentials available, then either refresh the token or log in.
+    if not credentials or not credentials.valid:
+        if credentials and credentials.expired and credentials.refresh_token:
+            print("Refreshing Access Token...")
+            credentials.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'client_secrets.json',
+                scopes=['https://www.googleapis.com/auth/youtube.force-ssl']
+            )
+            flow.run_local_server(port=8080, prompt='consent', authorization_prompt_message='')
+            credentials = flow.credentials
+            # Save the credentials for the next run
+            with open('token.pickle', 'wb') as f:
+                print("Saving Credentials for Future Use...")
+                pickle.dump(credentials, f)
+
+    youtube = build('youtube', 'v3', credentials=credentials)
+    return youtube
+
+# Function to update video details
+def update_video_details(youtube, video_id, tags, description):
+    # Example of updating video's tags and description
+    youtube.videos().update(
+        part="snippet",
+        body={
+            "id": video_id,
+            "snippet": {
+                "tags": tags,
+                "description": description
+            }
+        }
+    ).execute()
 
 if __name__ == "__main__":
     app_ui()
