@@ -1,4 +1,6 @@
 google-api-python-client
-pandas
 streamlit
 moviepy
+pandas==1.1.5
+numpy==1.19.5
+
