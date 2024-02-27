@@ -28,7 +28,6 @@ def search_youtube(keyword):
 def refine_tags_and_generate_comments(tags):
     tags_str = ", ".join(tags)
     try:
-        # Initiate a chat session with OpenAI using a supported chat model
         response = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
@@ -37,13 +36,16 @@ def refine_tags_and_generate_comments(tags):
                 {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
+
+        # Assuming the first user-generated content after the system message is the refined tags
+        # and the second is the generated comments. Adjust based on your observation of response structure.
+        messages = response['choices'][0]['message']['content'].split("\n")
+        if len(messages) > 1:
+            # This is a basic split logic; you might need to adjust based on how the actual content is structured.
+            refined_tags, comments = messages[0], "\n".join(messages[1:])
+        else:
+            refined_tags, comments = "No refined tags generated.", "No comments generated."
         
-        # Initialize placeholders for the output
-        # refined_tags, comments = "No refined tags generated.", "No comments generated."
-
-        refined_tags = response['choices'][0]['message']['content'] if response['choices'] else "No refined tags generated."
-        comments = response['choices'][1]['message']['content'] if len(response['choices']) > 1 else "No comments generated."
-
         return refined_tags, comments
     except Exception as e:
         st.error(f"An error occurred: {e}")
@@ -75,7 +77,7 @@ def app_ui():
                 st.session_state['unique_tags'] = unique_tags
 
     if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
-        refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'],comments)
+        refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
         st.text_area("Refined Tags", value=refined_tags, height=100)
         st.text_area("Generated Comments", value=comments, height=300)
         #combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
