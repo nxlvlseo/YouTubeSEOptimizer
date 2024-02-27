@@ -32,7 +32,7 @@ def refine_tags_and_generate_comments(tags):
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
-                {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."},
+                {"role": "user", "content": "Refine these YouTube tags for better reach: {tags_str}."},
                 {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
