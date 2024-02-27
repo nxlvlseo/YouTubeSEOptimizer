@@ -33,20 +33,17 @@ def refine_tags_and_generate_comments(tags):
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
                 {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."},
-            #    {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
+                {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
 
         # Assuming the first user-generated content after the system message is the refined tags
         # and the second is the generated comments. Adjust based on your observation of response structure.
-#        messages = response['choices'][0]['message']['content'].split("\n")
-#        if len(messages) > 1:
-            # This is a basic split logic; you might need to adjust based on how the actual content is structured.
-#            refined_tags, comments = messages[0], "\n".join(messages[1:])
-#        else:
-#            refined_tags, comments = "No refined tags generated.", "No comments generated."
-        refined_tags = message_content
-        return refined_tags#, comments
+        refined_tags = response_tags.choices[0].text.strip() if response_tags.choices else "No refined tags generated."
+        comments = response_comments.choices[0].text.strip() if response_comments.choices else "No comments generated."
+
+        
+        return refined_tags, comments
     except Exception as e:
         st.error(f"An error occurred: {e}")
         return "Error", "Error"
