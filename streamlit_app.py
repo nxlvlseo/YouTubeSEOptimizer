@@ -43,7 +43,7 @@ def refine_tags_and_generate_comments(tags):
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
-                {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags."}
+                {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags: {tags_str}"}
             ]
         )
         # and the second is the generated comments. Adjust based on your observation of response structure.
@@ -82,8 +82,8 @@ def app_ui():
 
     if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
         refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
-        st.text_area("Refined Tags", value=refined_tags, height=100)
-        st.text_area("Generated Comments", value=comments, height=300)
+        st.text_area("Refined Tags", value=refined_tags, height=250)
+        st.text_area("Generated Comments", value=comments, height=250)
         #combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
         #st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
               
