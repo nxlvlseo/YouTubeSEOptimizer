@@ -13,10 +13,6 @@ youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 openai.api_key = st.secrets["secrets"]["OPENAI_API_KEY"]
 
-import streamlit as st
-from googleapiclient.discovery import build
-import pandas as pd
-import openai
 
 def search_youtube(keyword):
     request = youtube.search().list(q=keyword, part="id", maxResults=30, type="video")
@@ -28,13 +24,28 @@ def search_youtube(keyword):
     return pd.DataFrame(videos_info)
 
 def refine_tags_and_generate_comments(tags):
+    # Join tags into a single string
     tags_str = ", ".join(tags)
-    prompt_for_tags = f"Refine and optimize these YouTube tags for better reach: {tags_str}."
-    prompt_for_comments = f"Generate 50 engaging YouTube comments based on these tags: {tags_str}."
-    response_tags = openai.Completion.create(model="gpt-4", prompt=prompt_for_tags, max_tokens=100, temperature=0.5)
-    response_comments = openai.Completion.create(model="gpt-4", prompt=prompt_for_comments, max_tokens=500, temperature=0.7, n=1, stop=["\n\n"])
-    refined_tags = response_tags.choices[0].text.strip()
-    comments = response_comments.choices[0].text.strip()
+    
+    # Prepare the conversation prompts
+    prompts = [
+        {"role": "system", "content": "You are a knowledgeable YouTube assistant."},
+        {"role": "user", "content": f"Refine and optimize these YouTube tags for better reach: {tags_str}."},
+        {"role": "user", "content": "Generate 50 engaging YouTube comments based on these tags."}
+    ]
+    
+    # Use the chat completion endpoint for a conversational model
+    response = openai.ChatCompletion.create(
+        model="gpt-4",  # Specify the chat model you're using
+        messages=prompts,
+        temperature=0.7,
+        max_tokens=500,
+    )
+    
+    # Assuming the last two messages in the response will be refined tags and generated comments
+    refined_tags = response.choices[-2]['message']['content']
+    comments = response.choices[-1]['message']['content']
+    
     return refined_tags, comments
 
 def app_ui():
