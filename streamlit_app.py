@@ -4,7 +4,7 @@ import pandas as pd
 import csv
 
 # Assuming you've set up st.secrets["YOUTUBE_API_KEY"] and st.secrets["OPENAI_API_KEY"] in your Streamlit app's secrets
-youtube_api_key = st.secrets["AIzaSyAslUJpszK7JrtG6o908WCUzhIrVBN8-tM"]
+youtube_api_key = st.secrets["secrets"]["YOUTUBE_API_KEY"]
 youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
 def search_youtube(keyword):
