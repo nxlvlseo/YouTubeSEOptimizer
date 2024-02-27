@@ -69,12 +69,12 @@ def app_ui():
                 unique_tags = list(set(all_tags))
                 st.session_state['unique_tags'] = unique_tags
 
-                if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
-                refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
-                st.text_area("Refined Tags", value=refined_tags, height=100)
-                st.text_area("Generated Comments", value=comments, height=300)
-                combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
-                st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
+        if 'unique_tags' in st.session_state and st.button("Refine Tags and Generate Comments"):
+            refined_tags, comments = refine_tags_and_generate_comments(st.session_state['unique_tags'])
+            st.text_area("Refined Tags", value=refined_tags, height=100)
+            st.text_area("Generated Comments", value=comments, height=300)
+            combined_text = f"Refined Tags:\n{refined_tags}\n\nGenerated Comments:\n{comments}"
+            st.download_button("Download Refined Tags and Comments", combined_text, "text/plain", "refined_tags_comments.txt")
 
 
 if __name__ == "__main__":
