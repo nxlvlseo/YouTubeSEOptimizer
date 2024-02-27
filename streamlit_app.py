@@ -5,7 +5,7 @@ from moviepy.editor import VideoFileClip
 import io
 
 # Initialize YouTube client with your API key
-youtube = build('youtube', 'v3', developerKey='YOUR_YOUTUBE_API_KEY')
+youtube = build('youtube', 'v3', developerKey='AIzaSyAslUJpszK7JrtG6o908WCUzhIrVBN8-tM')
 
 def fetch_youtube_data(keyword):
     request = youtube.search().list(
