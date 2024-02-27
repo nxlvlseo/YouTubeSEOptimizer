@@ -40,16 +40,9 @@ def refine_tags_and_generate_comments(tags):
         
         # Initialize placeholders for the output
         refined_tags, comments = "No refined tags generated.", "No comments generated."
-        
-        # Example logic to iterate through responses and extract information based on role
-        for choice in response.choices:
-            message_content = choice['message']['content']
-            # Example condition to identify refined tags and comments
-            # Adjust this logic based on how the actual responses are structured and identified
-            if "Refine these YouTube tags" in message_content:
-                refined_tags = message_content
-            elif "Generate 50 engaging YouTube comments" in message_content:
-                comments = message_content
+
+        refined_tags = response['choices'][0]['message']['content'] if response['choices'] else "No refined tags generated."
+        comments = response['choices'][1]['message']['content'] if len(response['choices']) > 1 else "No comments generated."
 
         return refined_tags, comments
     except Exception as e:
