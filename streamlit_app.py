@@ -33,7 +33,7 @@ def refine_tags_and_generate_comments(tags):
     try:
         # Deduplicate and optimize tags
         response_tags = openai.Completion.create(
-            engine="text-davinci-003",
+            engine="gpt-4",
             prompt=prompt_for_tags,
             max_tokens=100,
             temperature=0.5,
@@ -42,7 +42,7 @@ def refine_tags_and_generate_comments(tags):
 
         # Generate comments
         response_comments = openai.Completion.create(
-            engine="text-davinci-003",
+            engine="gpt-4",
             prompt=prompt_for_comments,
             max_tokens=500,
             temperature=0.7,
