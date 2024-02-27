@@ -28,11 +28,18 @@ def search_youtube(keyword):
 def refine_tags_and_generate_comments(tags):
     tags_str = ",".join(tags)
     try:
-        response = openai.ChatCompletion.create(
+        response_tags = openai.ChatCompletion.create(
             model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
-                {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."},
+                {"role": "user", "content": f"Refine these YouTube tags for better reach: {tags_str}."}
+            ]
+        )
+
+        response_comments = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an AI trained to refine video tags and generate engaging YouTube comments."},
                 {"role": "user", "content": f"Generate 50 engaging YouTube comments based on these tags."}
             ]
         )
